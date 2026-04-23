@@ -11,23 +11,25 @@ NICHE: privacy-tools
 PRICE: $$9/mo
 
 ARCHITECTURE SPEC:
-A Next.js web app that runs automated tests against various VPN protocols and providers to detect which ones successfully bypass government censorship. The system uses a network of global test nodes to simulate different restriction scenarios and provides real-time effectiveness ratings.
+A Next.js web app that performs real-time VPN effectiveness testing by running automated checks against known censorship methods from multiple global endpoints. Users get detailed reports on which VPN protocols and providers successfully bypass specific government blocks in their region.
 
 PLANNED FILES:
 - app/page.tsx
 - app/dashboard/page.tsx
 - app/test/page.tsx
-- app/api/vpn-test/route.ts
+- app/results/[testId]/page.tsx
+- app/api/test/route.ts
 - app/api/webhooks/lemonsqueezy/route.ts
-- components/VPNTestRunner.tsx
-- components/EffectivenessChart.tsx
-- components/ProviderComparison.tsx
+- components/TestRunner.tsx
+- components/VPNProviderCard.tsx
+- components/CensorshipMap.tsx
+- components/ProtocolResults.tsx
 - lib/vpn-tester.ts
-- lib/censorship-detector.ts
+- lib/censorship-db.ts
 - lib/lemonsqueezy.ts
-- types/vpn.ts
+- lib/auth.ts
 
-DEPENDENCIES: next, tailwindcss, @lemonsqueezy/lemonsqueezy.js, recharts, axios, prisma, @prisma/client, next-auth, lucide-react, date-fns
+DEPENDENCIES: next, tailwindcss, @lemonsqueezy/lemonsqueezy.js, next-auth, prisma, @prisma/client, puppeteer, axios, recharts, lucide-react, zod, jose
 
 REQUIREMENTS:
 - Next.js 15 with App Router (app/ directory)

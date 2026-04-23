@@ -3,31 +3,36 @@
 :root {
   color-scheme: dark;
   --background: #0d1117;
-  --background-soft: #161b22;
-  --foreground: #e6edf3;
-  --foreground-muted: #9ba7b4;
-  --accent: #22d3ee;
-  --accent-strong: #06b6d4;
+  --panel: #111827;
+  --panel-soft: #0f172a;
+  --line: #233041;
+  --text: #e6edf3;
+  --text-muted: #9fb0c3;
+  --accent: #2ea043;
+  --danger: #f85149;
 }
 
 * {
-  border-color: rgb(38 50 65 / 70%);
+  border-color: var(--line);
 }
 
 html,
 body {
+  background: radial-gradient(circle at 15% 10%, #13213d 0%, #0d1117 45%, #090c12 100%);
+  color: var(--text);
   min-height: 100%;
 }
 
 body {
-  background:
-    radial-gradient(circle at 15% -10%, rgb(34 211 238 / 18%), transparent 36%),
-    radial-gradient(circle at 90% 0%, rgb(59 130 246 / 15%), transparent 35%),
-    linear-gradient(180deg, #0d1117 0%, #0d1117 100%);
-  color: var(--foreground);
+  font-family: var(--font-space-grotesk), "Segoe UI", sans-serif;
 }
 
-::selection {
-  background: rgb(34 211 238 / 26%);
-  color: #f8fbff;
+a {
+  color: inherit;
+}
+
+.section-grid {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 36px 36px;
 }

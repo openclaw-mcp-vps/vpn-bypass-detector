@@ -1,63 +1,55 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, Space_Grotesk } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
 
 import "@/app/globals.css";
 
-const heading = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-heading",
-  display: "swap",
-});
-
-const mono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-  weight: ["400", "500"],
-  display: "swap",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
+  subsets: ["latin"]
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://vpn-bypass-detector.com"),
+  metadataBase: new URL("https://vpn-bypass-detector.app"),
   title: {
-    default: "VPN Bypass Detector | Test VPN Effectiveness Against Censorship",
-    template: "%s | VPN Bypass Detector",
+    default: "VPN Bypass Detector",
+    template: "%s | VPN Bypass Detector"
   },
   description:
-    "Measure how well VPN protocols and providers bypass DNS poisoning, DPI blocking, SNI filtering, and throttling in restricted countries.",
+    "Test VPN protocols and providers against real censorship controls. Find what works before you need it.",
   keywords: [
-    "VPN censorship testing",
+    "VPN censorship test",
     "internet freedom",
-    "DPI bypass",
-    "country VPN reliability",
-    "privacy tools",
+    "bypass government blocks",
+    "VPN protocol benchmark",
+    "privacy tools"
   ],
+  alternates: {
+    canonical: "/"
+  },
   openGraph: {
+    type: "website",
+    url: "/",
     title: "VPN Bypass Detector",
     description:
-      "Run practical bypass tests against censorship patterns and rank VPN providers by real-world survivability.",
-    url: "https://vpn-bypass-detector.com",
-    siteName: "VPN Bypass Detector",
-    locale: "en_US",
-    type: "website",
+      "Real-time VPN bypass testing for censorship-heavy countries. Compare providers, protocols, and block techniques.",
+    siteName: "VPN Bypass Detector"
   },
   twitter: {
     card: "summary_large_image",
     title: "VPN Bypass Detector",
     description:
-      "Find which VPN protocol still works when governments throttle, inspect, and block traffic.",
+      "Real-time VPN bypass testing for censorship-heavy countries. Compare providers, protocols, and block techniques."
   },
+  robots: {
+    index: true,
+    follow: true
+  }
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className="dark">
-      <body className={`${heading.variable} ${mono.variable} bg-[#0d1117] text-slate-100 antialiased`}>
-        {children}
-      </body>
+      <body className={`${spaceGrotesk.variable} bg-[#0d1117] text-[#e6edf3] antialiased`}>{children}</body>
     </html>
   );
 }

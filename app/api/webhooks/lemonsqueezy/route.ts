@@ -1,47 +1,36 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-import { upsertAccessGrant } from "@/lib/access-store";
-import {
-  extractSuccessfulCheckout,
-  initializeLemonSqueezySdk,
-  verifyIncomingWebhook,
-} from "@/lib/lemonsqueezy";
+import { extractPaidEmail, isPaymentConfirmed, verifyStripeWebhookSignature } from "@/lib/lemonsqueezy";
+import { upsertPurchase } from "@/lib/storage";
 
-export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
-export async function POST(request: NextRequest) {
-  initializeLemonSqueezySdk();
-
+export async function POST(request: Request) {
   const rawBody = await request.text();
-  const signature = request.headers.get("x-signature") ?? request.headers.get("stripe-signature");
-  const secret = process.env.STRIPE_WEBHOOK_SECRET;
+  const signature = request.headers.get("stripe-signature") ?? request.headers.get("x-signature");
 
-  const verified = verifyIncomingWebhook(rawBody, signature, secret);
-  if (!verified) {
-    return NextResponse.json({ error: "Invalid webhook signature." }, { status: 401 });
+  if (!verifyStripeWebhookSignature(rawBody, signature)) {
+    return NextResponse.json({ ok: false, message: "Invalid webhook signature." }, { status: 401 });
   }
 
-  let payload: unknown;
-  try {
-    payload = JSON.parse(rawBody);
-  } catch {
-    return NextResponse.json({ error: "Malformed JSON payload." }, { status: 400 });
+  const event = JSON.parse(rawBody) as { type?: string };
+
+  if (!isPaymentConfirmed(event)) {
+    return NextResponse.json({ ok: true, ignored: true });
   }
 
-  const checkout = extractSuccessfulCheckout(payload);
-  if (checkout?.email) {
-    await upsertAccessGrant(checkout.email, checkout.paymentId);
+  const email = extractPaidEmail(event);
+
+  if (!email) {
+    return NextResponse.json({ ok: false, message: "No customer email in webhook payload." }, { status: 400 });
   }
 
-  return NextResponse.json({
-    received: true,
-    granted: Boolean(checkout?.email),
+  await upsertPurchase({
+    email,
+    source: "stripe",
+    eventType: event.type ?? "unknown",
+    active: true
   });
-}
 
-export async function GET() {
-  return NextResponse.json({
-    status: "ok",
-    endpoint: "webhook-listener",
-  });
+  return NextResponse.json({ ok: true });
 }
